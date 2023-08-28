@@ -8,7 +8,9 @@ import { ExpensesModule } from './expenses/expenses.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { JwtAuthGuard } from './auth/guards/jwt/jwt-auth.guard';
+import { IncomesModule } from './incomes/incomes.module';
 import Expense from './expenses/entities/expense.entity';
+import Income from './incomes/entities/income.entity';
 
 @Module({
   imports: [
@@ -19,7 +21,7 @@ import Expense from './expenses/entities/expense.entity';
       username: pg.username,
       password: pg.password,
       database: pg.database,
-      entities: [User, Expense],
+      entities: [User, Expense, Income],
       autoLoadEntities: true,
       synchronize: true,
     }),
@@ -27,6 +29,7 @@ import Expense from './expenses/entities/expense.entity';
     AuthModule,
     UsersModule,
     ExpensesModule,
+    IncomesModule,
   ],
   providers: [
     {
