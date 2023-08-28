@@ -5,9 +5,14 @@ export default class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    unique: true,
+    nullable: false,
+  })
   username: string;
 
-  @Column()
+  @Column({
+    nullable: false,
+  })
   password: string;
 }

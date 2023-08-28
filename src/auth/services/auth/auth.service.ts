@@ -4,6 +4,7 @@ import RegisterUserDto from 'src/auth/dto/register.dto';
 import LoginUserDto from 'src/auth/dto/login-user.dto';
 import { UsersService } from 'src/users/service/users/users.service';
 import SignUserDto from 'src/auth/dto/sign-user.dto';
+import { comparePasswords } from 'src/utils/bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,7 @@ export class AuthService {
     password,
   }: LoginUserDto): Promise<SignUserDto | null> {
     const user = await this.usersService.findOne(username);
-    if (user && user.password === password) {
+    if (user && comparePasswords(password, user.password)) {
       return {
         id: user.id,
         username: user.username,
