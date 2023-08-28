@@ -5,8 +5,6 @@ import {
   Post,
   Request,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { Request as ExpressReq } from 'express';
 import RegisterUserDto from 'src/auth/dto/register.dto';
@@ -23,14 +21,12 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Public()
   @Post('login')
-  @UsePipes(ValidationPipe)
   async login(@Body() reqBody: LoginUserDto) {
     return this.authService.login(reqBody);
   }
 
   @Post('register')
   @Public()
-  @UsePipes(ValidationPipe)
   async register(
     @Body() reqBody: RegisterUserDto,
   ): Promise<{ userId: number }> {

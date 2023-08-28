@@ -11,6 +11,9 @@ export default class User {
   })
   username: string;
 
+  @Column()
+  balance: number;
+
   @Column({
     nullable: false,
   })
