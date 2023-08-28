@@ -1,10 +1,9 @@
-import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 class UpdateUserBalanceDto {
   @IsNotEmpty()
-  @IsPositive()
   @IsNumber()
-  balance: number;
+  value: number;
 }
 
 class UpdateUserNameDto {

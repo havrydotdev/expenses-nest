@@ -53,9 +53,15 @@ export class UsersService {
   async updateBalance(
     userId: number,
     updateInput: UpdateUserBalanceDto,
-  ): Promise<User | null> {
-    const result = await this.update(userId, updateInput);
-    return result;
+  ): Promise<void> {
+    await this.usersRepo
+      .createQueryBuilder()
+      .update<User>(User)
+      .set({
+        balance: () => `balance + ${updateInput.value}`,
+      })
+      .where('id = :id', { id: userId })
+      .execute();
   }
 
   async updateUsername(

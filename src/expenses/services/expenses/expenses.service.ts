@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateExpenseDto } from 'src/expenses/dto/create-expense.dto';
 import Expense from 'src/expenses/entities/expense.entity';
+import { UsersService } from 'src/users/service/users/users.service';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class ExpensesService {
   constructor(
     @InjectRepository(Expense) private expensesRepo: Repository<Expense>,
+    private usersService: UsersService,
   ) {}
 
   async findAll(userId: number): Promise<Expense[]> {
@@ -28,6 +30,10 @@ export class ExpensesService {
   }
 
   async create(userId: number, expense: CreateExpenseDto): Promise<Expense> {
+    this.usersService.updateBalance(userId, {
+      value: -expense.value,
+    });
+
     return this.expensesRepo.create({
       ...expense,
       user: {

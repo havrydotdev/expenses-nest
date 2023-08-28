@@ -12,4 +12,10 @@ const pg = {
   database: process.env.POSTGRES_DATABASE,
 };
 
-export { jwtSecret, pg };
+const cron = {
+  EVERY_MONTH: '0 0 1 * *',
+  EVERY_WEEK: '0 0 * * 0',
+  EVERY_DAY: '0 0 * * *',
+};
+
+export { jwtSecret, pg, cron };
