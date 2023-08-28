@@ -1,4 +1,4 @@
-export default class ResponseExpenseDto {
+export default class ExpenseDto {
   id: number;
   title: string;
   desc?: string;

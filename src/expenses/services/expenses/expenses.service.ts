@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateExpenseDto } from 'src/expenses/dto/create-expense.dto';
+import ExpenseDto from 'src/expenses/dto/expense.dto';
 import Expense from 'src/expenses/entities/expense.entity';
 import { UsersService } from 'src/users/service/users/users.service';
 import { Repository } from 'typeorm';
@@ -29,16 +30,27 @@ export class ExpensesService {
     });
   }
 
-  async create(userId: number, expense: CreateExpenseDto): Promise<Expense> {
+  async create(userId: number, expense: CreateExpenseDto): Promise<ExpenseDto> {
     this.usersService.updateBalance(userId, {
       value: -expense.value,
     });
 
-    return this.expensesRepo.create({
-      ...expense,
-      user: {
-        id: userId,
-      },
-    });
+    const result = await this.expensesRepo
+      .createQueryBuilder()
+      .insert()
+      .into(Expense)
+      .values({
+        title: expense.title,
+        desc: expense.desc,
+        value: expense.value,
+        date: new Date(),
+        user: {
+          id: userId,
+        },
+      })
+      .returning('*')
+      .execute();
+
+    return result.raw as ExpenseDto;
   }
 }

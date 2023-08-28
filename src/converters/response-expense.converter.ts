@@ -1,4 +1,4 @@
-import ResponseExpenseDto from 'src/expenses/dto/response-expense.dto';
+import ResponseExpenseDto from 'src/expenses/dto/expense.dto';
 import Expense from 'src/expenses/entities/expense.entity';
 
 const fromExpenseToResponse = (exp: Expense): ResponseExpenseDto => {

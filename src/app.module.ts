@@ -6,7 +6,7 @@ import User from './users/entities/user.entity';
 import { pg } from './constants';
 import { ExpensesModule } from './expenses/expenses.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { CacheInterceptor } from '@nestjs/cache-manager';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { JwtAuthGuard } from './auth/guards/jwt/jwt-auth.guard';
 import Expense from './expenses/entities/expense.entity';
 
@@ -23,6 +23,7 @@ import Expense from './expenses/entities/expense.entity';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    CacheModule.register(),
     AuthModule,
     UsersModule,
     ExpensesModule,

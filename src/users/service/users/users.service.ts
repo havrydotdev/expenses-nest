@@ -29,7 +29,10 @@ export class UsersService {
 
   async create(user: CreateUserDto): Promise<number> {
     user.password = encodePassword(user.password);
-    const createdUser = await this.usersRepo.insert(user);
+    const createdUser = await this.usersRepo.insert({
+      ...user,
+      balance: 0,
+    });
     return createdUser.identifiers[0].id;
   }
 
