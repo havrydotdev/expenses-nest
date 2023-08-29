@@ -10,4 +10,7 @@ export default class CreateIncomeDto {
   value: number;
 
   desc?: string;
+
+  // initialized in controller
+  userId?: number;
 }

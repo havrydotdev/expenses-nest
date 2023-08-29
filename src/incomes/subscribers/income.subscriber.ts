@@ -5,13 +5,13 @@ import {
   EventSubscriber,
   InsertEvent,
 } from 'typeorm';
-import Expense from '../entities/expense.entity';
+import Income from '../entities/income.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 @Injectable()
 @EventSubscriber()
-export class ExpenseSubscriber implements EntitySubscriberInterface {
+export class IncomeSubscriber implements EntitySubscriberInterface {
   constructor(
     @InjectDataSource() readonly dataSource: DataSource,
     private usersService: UsersService,
@@ -20,12 +20,12 @@ export class ExpenseSubscriber implements EntitySubscriberInterface {
   }
 
   listenTo() {
-    return Expense;
+    return Income;
   }
 
-  afterInsert(event: InsertEvent<Expense>) {
+  afterInsert(event: InsertEvent<Income>) {
     this.usersService.updateBalance(event.entity.user.id, {
-      value: -event.entity.value,
+      value: event.entity.value,
     });
   }
 }

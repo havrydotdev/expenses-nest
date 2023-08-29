@@ -22,16 +22,19 @@ export class SchedulesService {
   @Cron(cron.EVERY_WEEK)
   handleEveryWeek() {
     this.logger.debug('Called EVERY_WEEK cron handler');
+    this.executeSchedulesByDate(Dates.Weekly);
   }
 
   @Cron(cron.EVERY_DAY)
   handleEveryDay() {
     this.logger.debug('Called EVERY_DAY cron handler');
+    this.executeSchedulesByDate(Dates.Daily);
   }
 
   @Cron(cron.EVERY_MONTH)
   handleEveryMonth() {
     this.logger.debug('Called EVERY_MONTH cron handler');
+    this.executeSchedulesByDate(Dates.Monthly);
   }
 
   async create(userId: number, createDto: CreateScheduleDto) {
@@ -66,6 +69,16 @@ export class SchedulesService {
         .map((sch) => ({
           ...sch,
           value: -sch.value,
+          userId: sch.user.id,
+        })),
+    );
+
+    this.incomesService.create(
+      schedules
+        .filter((sch: Schedule) => sch.value > 0)
+        .map((sch) => ({
+          ...sch,
+          value: sch.value,
           userId: sch.user.id,
         })),
     );
