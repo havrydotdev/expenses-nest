@@ -27,8 +27,8 @@ export class IncomesController {
   async create(
     @Request() req: ExpressReq,
     @Body() createDto: CreateExpenseDto,
-  ): Promise<IncomeDto> {
-    const incomes = await this.incomesService.create(req.user.id, createDto);
+  ): Promise<IncomeDto[]> {
+    const incomes = await this.incomesService.create(req.user.id, [createDto]);
     return incomes;
   }
 

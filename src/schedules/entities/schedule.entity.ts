@@ -19,6 +19,8 @@ export default class Schedule {
   @Column()
   title: string;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id, {
+    eager: true,
+  })
   user: User;
 }

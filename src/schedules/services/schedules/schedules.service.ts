@@ -5,11 +5,16 @@ import { cron } from 'src/constants';
 import Schedule from 'src/schedules/entities/schedule.entity';
 import { Repository } from 'typeorm';
 import CreateScheduleDto from 'src/schedules/dto/create-schedule.dto';
+import Dates from 'src/schedules/interfaces/dates.enum';
+import { IncomesService } from 'src/incomes/services/incomes/incomes.service';
+import { ExpensesService } from 'src/expenses/services/expenses/expenses.service';
 
 @Injectable()
 export class SchedulesService {
   constructor(
     @InjectRepository(Schedule) private scheduleRepo: Repository<Schedule>,
+    private incomesService: IncomesService,
+    private expensesService: ExpensesService,
   ) {}
 
   private readonly logger = new Logger(SchedulesService.name);
@@ -44,5 +49,25 @@ export class SchedulesService {
       .execute();
 
     return result.raw;
+  }
+
+  async getAllByDate(date: Dates): Promise<Schedule[]> {
+    return this.scheduleRepo.findBy({
+      date: date,
+    });
+  }
+
+  async executeSchedulesByDate(date: Dates): Promise<void> {
+    const schedules = await this.getAllByDate(date);
+
+    this.expensesService.create(
+      schedules
+        .filter((sch: Schedule) => sch.value < 0)
+        .map((sch) => ({
+          ...sch,
+          value: -sch.value,
+          userId: sch.user.id,
+        })),
+    );
   }
 }

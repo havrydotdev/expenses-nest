@@ -30,27 +30,40 @@ export class IncomesService {
     });
   }
 
-  async create(userId: number, income: CreateIncomeDto): Promise<IncomeDto> {
+  async create(
+    userId: number,
+    incomes: CreateIncomeDto[],
+  ): Promise<IncomeDto[]> {
+    let incrementValue = 0;
+
+    if (incomes.length === 1) {
+      incrementValue = incomes.at(0).value;
+    } else {
+      incomes.forEach((dto: CreateIncomeDto) => {
+        incrementValue += dto.value;
+      });
+    }
+
     this.usersService.updateBalance(userId, {
-      value: income.value,
+      value: incrementValue,
     });
 
     const result = await this.incomesRepo
       .createQueryBuilder()
       .insert()
       .into(Income)
-      .values({
-        title: income.title,
-        desc: income.desc,
-        value: income.value,
-        date: new Date(),
-        user: {
-          id: userId,
-        },
-      })
+      .values(
+        incomes.map((dto: CreateIncomeDto) => ({
+          ...dto,
+          date: new Date(),
+          user: {
+            id: userId,
+          },
+        })),
+      )
       .returning('*')
       .execute();
 
-    return result.raw as IncomeDto;
+    return result.raw as IncomeDto[];
   }
 }

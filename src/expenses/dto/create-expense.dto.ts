@@ -10,4 +10,7 @@ export class CreateExpenseDto {
   value: number;
 
   desc?: string;
+
+  // initialized in controller
+  userId?: number;
 }

@@ -27,8 +27,9 @@ export class ExpensesController {
   async create(
     @Request() req: ExpressReq,
     @Body() createDto: CreateExpenseDto,
-  ): Promise<ExpenseDto> {
-    const expense = await this.expensesService.create(req.user.id, createDto);
+  ): Promise<ExpenseDto[]> {
+    createDto.userId = req.user.id;
+    const expense = await this.expensesService.create([createDto]);
     return expense;
   }
 

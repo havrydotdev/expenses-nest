@@ -3,14 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateExpenseDto } from 'src/expenses/dto/create-expense.dto';
 import ExpenseDto from 'src/expenses/dto/expense.dto';
 import Expense from 'src/expenses/entities/expense.entity';
-import { UsersService } from 'src/users/service/users/users.service';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class ExpensesService {
   constructor(
     @InjectRepository(Expense) private expensesRepo: Repository<Expense>,
-    private usersService: UsersService,
   ) {}
 
   async findAll(userId: number): Promise<Expense[]> {
@@ -30,25 +28,23 @@ export class ExpensesService {
     });
   }
 
-  async create(userId: number, expense: CreateExpenseDto): Promise<ExpenseDto> {
-    this.usersService.updateBalance(userId, {
-      value: -expense.value,
-    });
-
+  async create(expenses: CreateExpenseDto[]): Promise<ExpenseDto[]> {
     const result = await this.expensesRepo
       .createQueryBuilder()
       .insert()
       .into(Expense)
-      .values({
-        ...expense,
-        date: new Date(),
-        user: {
-          id: userId,
-        },
-      })
+      .values(
+        expenses.map((dto: CreateExpenseDto) => ({
+          ...dto,
+          date: new Date(),
+          user: {
+            id: dto.userId,
+          },
+        })),
+      )
       .returning('*')
       .execute();
 
-    return result.raw as ExpenseDto;
+    return result.raw as ExpenseDto[];
   }
 }
