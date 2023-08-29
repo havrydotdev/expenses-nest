@@ -40,9 +40,7 @@ export class ExpensesService {
       .insert()
       .into(Expense)
       .values({
-        title: expense.title,
-        desc: expense.desc,
-        value: expense.value,
+        ...expense,
         date: new Date(),
         user: {
           id: userId,
